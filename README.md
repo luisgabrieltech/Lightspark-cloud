@@ -9,14 +9,14 @@
 
 ### Método 1: Usando Node.js localmente
 
-1. Clone o repositório: 
+1. Clone o repositório: https://github.com/luisgabrieltech/Lightspark-cloud.git
    ```
 
 ### Método 2: Usando Docker
 
 1. Clone o repositório:
    ```bash
-   git clone [URL]
+   git clone [[URL](https://github.com/luisgabrieltech/Lightspark-cloud.git)]
    cd LightSpark
    ```
 
