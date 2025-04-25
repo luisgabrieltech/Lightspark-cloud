@@ -12,17 +12,16 @@ app.use(express.json());
 // Servir arquivos estáticos do Frontend
 app.use(express.static(path.join(__dirname, "../Frontend")));
 
-// Rota principal para abrir o index.html
+// Rota principal
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "../Frontend/index.html"));
 });
 
-// API de monitoramento
 app.get("/api/status", (req, res) => {
   res.json({ status: "API online", timestamp: new Date() });
 });
 
-// Lista todas as campanhas
+// Lista as campanhas
 app.get("/api/campanhas", (req, res) => {
   res.json(campanhas);
 });
@@ -34,7 +33,6 @@ app.post("/api/campanhas", (req, res) => {
   res.status(201).json({ mensagem: "Campanha adicionada com sucesso!" });
 });
 
-// Inicia o servidor
 app.listen(port, () => {
   console.log(`API da LightSpark rodando na porta ${port}`);
 });
