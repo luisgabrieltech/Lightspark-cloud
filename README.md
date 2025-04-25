@@ -16,7 +16,7 @@
 
 1. Clone o repositório:
    ```bash
-   git clone [(https://github.com/luisgabrieltech/Lightspark-cloud.git)]
+   git clone https://github.com/luisgabrieltech/Lightspark-cloud.git
    cd LightSpark
    ```
 
