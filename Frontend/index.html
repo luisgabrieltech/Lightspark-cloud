@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard LightSpark</title>
+  <style>
+    /* Variables for consistent theming */
+    :root {
+      --primary: #4361ee;
+      --primary-dark: #3a56d4;
+      --secondary: #7209b7;
+      --accent: #f72585;
+      --light: #f8f9fa;
+      --dark: #212529;
+      --success: #38b000;
+      --warning: #ffaa00;
+      --gray-100: #f8f9fa;
+      --gray-200: #e9ecef;
+      --gray-300: #dee2e6;
+      --gray-400: #ced4da;
+      --gray-500: #adb5bd;
+      --gray-600: #6c757d;
+      --gray-700: #495057;
+      --gray-800: #343a40;
+      --gray-900: #212529;
+      --shadow-sm: 0 2px 4px rgba(0,0,0,0.05);
+      --shadow-md: 0 4px 8px rgba(0,0,0,0.1);
+      --shadow-lg: 0 8px 16px rgba(0,0,0,0.1);
+      --transition: all 0.3s ease;
+      --border-radius: 12px;
+    }
+
+    /* Reset and base styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background-color: var(--gray-100);
+      color: var(--gray-800);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* Animation keyframes */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes slideInLeft {
+      from { opacity: 0; transform: translateX(-30px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+
+    @keyframes shimmer {
+      0% { background-position: -1000px 0; }
+      100% { background-position: 1000px 0; }
+    }
+
+    /* Header styles */
+    header {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: white;
+      padding: 1.5rem 2rem;
+      box-shadow: var(--shadow-md);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      animation: fadeIn 0.8s ease-out;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 1.8rem;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      position: relative;
+      display: inline-block;
+    }
+
+    header h1::after {
+      content: '';
+      position: absolute;
+      bottom: -5px;
+      left: 0;
+      width: 40px;
+      height: 3px;
+      background-color: var(--accent);
+      transition: var(--transition);
+    }
+
+    header h1:hover::after {
+      width: 100%;
+    }
+
+    /* Main content area */
+    main {
+      padding: 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+      animation: fadeIn 0.6s ease-out;
+    }
+
+    /* Form container */
+    .form-container {
+      background-color: white;
+      padding: 2rem;
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow-md);
+      margin: 2rem auto;
+      transition: var(--transition);
+      animation: slideInLeft 0.5s ease-out;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .form-container:hover {
+      box-shadow: var(--shadow-lg);
+      transform: translateY(-5px);
+    }
+
+    .form-container h2 {
+      margin-bottom: 1.5rem;
+      color: var(--primary);
+      font-size: 1.6rem;
+      position: relative;
+      display: inline-block;
+    }
+
+    .form-container h2::after {
+      content: '';
+      position: absolute;
+      bottom: -5px;
+      left: 0;
+      width: 30px;
+      height: 3px;
+      background-color: var(--accent);
+      transition: var(--transition);
+    }
+
+    .form-container:hover h2::after {
+      width: 100%;
+    }
+
+    /* Form inputs */
+    .input-group {
+      margin-bottom: 1.5rem;
+      position: relative;
+    }
+
+    .input-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      color: var(--gray-700);
+      font-weight: 500;
+      transition: var(--transition);
+    }
+
+    .input-group input {
+      width: 100%;
+      padding: 0.8rem 1rem;
+      font-size: 1rem;
+      border: 1px solid var(--gray-300);
+      border-radius: 8px;
+      transition: var(--transition);
+      background-color: var(--gray-100);
+    }
+
+    .input-group input:focus {
+      border-color: var(--primary);
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.15);
+      background-color: white;
+    }
+
+    .input-group:hover label {
+      color: var(--primary);
+    }
+
+    /* Submit button */
+    .submit-btn {
+      width: 100%;
+      padding: 1rem;
+      font-size: 1.1rem;
+      font-weight: 600;
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .submit-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.2),
+        transparent
+      );
+      transition: 0.5s;
+    }
+
+    .submit-btn:hover {
+      background-color: var(--primary-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(67, 97, 238, 0.3);
+    }
+
+    .submit-btn:hover::before {
+      left: 100%;
+    }
+
+    .submit-btn:active {
+      transform: translateY(1px);
+    }
+
+    /* Table styles */
+    .table-container {
+      overflow-x: auto;
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow-md);
+      animation: fadeIn 0.8s ease-out;
+      background: white;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background-color: white;
+      overflow: hidden;
+    }
+
+    th, td {
+      padding: 1rem 1.5rem;
+      text-align: left;
+    }
+
+    th {
+      background-color: var(--primary);
+      color: white;
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 0.85rem;
+      letter-spacing: 0.5px;
+      position: relative;
+    }
+
+    th:after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background-color: var(--accent);
+      transform: scaleX(0);
+      transition: transform 0.3s ease;
+    }
+
+    th:hover:after {
+      transform: scaleX(1);
+    }
+
+    tr {
+      transition: var(--transition);
+    }
+
+    tr:nth-child(even) {
+      background-color: var(--gray-100);
+    }
+
+    tr:hover {
+      background-color: rgba(67, 97, 238, 0.05);
+      transform: scale(1.01);
+    }
+
+    td {
+      border-bottom: 1px solid var(--gray-200);
+    }
+
+    /* Empty state animation */
+    .empty-table {
+      height: 200px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--gray-500);
+      font-style: italic;
+      background: linear-gradient(90deg, var(--gray-100), var(--gray-200), var(--gray-100));
+      background-size: 1000px 100%;
+      animation: shimmer 2s infinite linear;
+    }
+
+    /* Footer styles */
+    .footer {
+      text-align: center;
+      padding: 2rem;
+      font-size: 0.9rem;
+      color: var(--gray-600);
+      margin-top: 2rem;
+      border-top: 1px solid var(--gray-200);
+      animation: fadeIn 1s ease-out;
+    }
+
+    .footer span {
+      display: inline-block;
+      transition: var(--transition);
+    }
+
+    .footer:hover span {
+      transform: translateY(-3px);
+      color: var(--primary);
+    }
+
+    /* Loading animation */
+    .loading {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: linear-gradient(90deg, var(--primary), var(--accent), var(--primary));
+      z-index: 1000;
+      animation: shimmer 2s infinite linear;
+      background-size: 200% 100%;
+    }
+
+    /* Toast notification */
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background-color: var(--success);
+      color: white;
+      padding: 1rem 1.5rem;
+      border-radius: 8px;
+      box-shadow: var(--shadow-md);
+      transform: translateY(100px);
+      opacity: 0;
+      transition: var(--transition);
+      z-index: 1000;
+    }
+
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    /* Responsive styles */
+    @media (max-width: 768px) {
+      header {
+        padding: 1rem;
+      }
+
+      header h1 {
+        font-size: 1.5rem;
+      }
+
+      main {
+        padding: 1rem;
+      }
+
+      .form-container {
+        padding: 1.5rem;
+      }
+
+      th, td {
+        padding: 0.8rem;
+      }
+
+      th {
+        font-size: 0.75rem;
+      }
+    }
+
+    @media (max-width: 576px) {
+      .form-container h2 {
+        font-size: 1.4rem;
+      }
+
+      th {
+        font-size: 0.7rem;
+        padding: 0.6rem;
+      }
+
+      td {
+        padding: 0.6rem;
+        font-size: 0.9rem;
+      }
+    }
+
+    /* Dashboard layout for larger screens */
+    @media (min-width: 992px) {
+      .dashboard-layout {
+        display: grid;
+        grid-template-columns: 1fr 1.5fr;
+        gap: 2rem;
+        align-items: start;
+      }
+
+      .form-container {
+        margin-top: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Loading indicator -->
+  <div class="loading" id="loading-bar"></div>
+
+  <header>
+    <h1>Dashboard de Campanhas - LightSpark</h1>
+  </header>
+  
+  <main>
+    <div class="dashboard-layout">
+      <!-- Formulário de Nova Campanha -->
+      <div class="form-container">
+        <h2>Nova Campanha</h2>
+        <form id="form-campanha">
+          <div class="input-group">
+            <label for="cliente">Cliente</label>
+            <input type="text" name="cliente" id="cliente" placeholder="Nome do cliente" required />
+          </div>
+          
+          <div class="input-group">
+            <label for="cliques">Cliques</label>
+            <input type="number" name="cliques" id="cliques" placeholder="Número de cliques" required />
+          </div>
+
+          <div class="input-group">
+            <label for="impressoes">Visualizações</label>
+            <input type="number" name="impressoes" id="impressoes" placeholder="Número de visualizações" required />
+          </div>
+
+          <div class="input-group">
+            <label for="engagement">Engajamento</label>
+            <input type="number" name="engagement" id="engagement" step="0.01" placeholder="Taxa de engajamento (ex: 0.23)" required />
+          </div>
+
+          <div class="input-group">
+            <label for="previsao_roi">Previsão ROI</label>
+            <input type="number" name="previsao_roi" id="previsao_roi" step="0.01" placeholder="Previsão de retorno sobre investimento" required />
+          </div>
+
+          <button type="submit" class="submit-btn">Adicionar Campanha</button>
+        </form>
+      </div>
+
+      <!-- Tabela de Campanhas -->
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Cliente</th>
+              <th>Cliques</th>
+              <th>Visualizações</th>
+              <th>Engajamento</th>
+              <th>Previsão de ROI</th>
+            </tr>
+          </thead>
+          <tbody id="tabela-campanhas">
+            <!-- Dados serão inseridos aqui via JavaScript -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <div class="footer">
+    <span>© 2025 LightSpark Marketing Digital</span>
+  </div>
+
+  <!-- Toast notification -->
+  <div class="toast" id="toast-notification">Campanha adicionada com sucesso!</div>
+
+  <script>
+    // Elementos DOM
+    const tabela = document.getElementById('tabela-campanhas');
+    const loadingBar = document.getElementById('loading-bar');
+    const toastNotification = document.getElementById('toast-notification');
+    
+    // Função para mostrar o loading
+    function showLoading() {
+      loadingBar.style.display = 'block';
+    }
+    
+    // Função para esconder o loading
+    function hideLoading() {
+      loadingBar.style.display = 'none';
+    }
+    
+    // Função para mostrar notificação toast
+    function showToast(message) {
+      toastNotification.textContent = message;
+      toastNotification.classList.add('show');
+      
+      setTimeout(() => {
+        toastNotification.classList.remove('show');
+      }, 3000);
+    }
+  
+    // Função para carregar dados da tabela com animação
+    function carregarTabela() {
+      showLoading();
+      
+      fetch('/api/campanhas')
+        .then(res => res.json())
+        .then(dados => {
+          hideLoading();
+          
+          if (dados.length === 0) {
+            tabela.innerHTML = `
+              <tr>
+                <td colspan="5" class="empty-table">Nenhuma campanha encontrada. Adicione sua primeira campanha!</td>
+              </tr>
+            `;
+            return;
+          }
+          
+          // Limpa a tabela primeiro
+          tabela.innerHTML = '';
+          
+          // Adiciona cada linha com delay para animação
+          dados.forEach((c, index) => {
+            setTimeout(() => {
+              const tr = document.createElement('tr');
+              tr.style.opacity = '0';
+              tr.style.transform = 'translateY(20px)';
+              
+              tr.innerHTML = `
+                <td>${c.cliente}</td>
+                <td>${c.cliques.toLocaleString('pt-BR')}</td>
+                <td>${c.impressoes.toLocaleString('pt-BR')}</td>
+                <td>${(c.engagement * 100).toFixed(1)}%</td>
+                <td>${c.previsao_roi.toFixed(2)}</td>
+              `;
+              
+              tabela.appendChild(tr);
+              
+              // Força um reflow para que a animação funcione
+              void tr.offsetWidth;
+              
+              // Aplica a animação
+              tr.style.transition = 'all 0.3s ease';
+              tr.style.opacity = '1';
+              tr.style.transform = 'translateY(0)';
+            }, index * 100); // Delay escalonado para cada linha
+          });
+        })
+        .catch(error => {
+          hideLoading();
+          console.error('Erro ao carregar dados:', error);
+          tabela.innerHTML = `
+            <tr>
+              <td colspan="5" class="empty-table">Erro ao carregar dados. Verifique se a API está rodando.</td>
+            </tr>
+          `;
+        });
+    }
+  
+    // Carrega a tabela ao iniciar a página
+    carregarTabela();
+  
+    // Manipula o envio do formulário
+    document.getElementById('form-campanha').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      showLoading();
+      
+      const formEl = e.target;
+      const dados = Object.fromEntries(new FormData(formEl));
+      
+      // Converte valores para números
+      dados.cliques = parseInt(dados.cliques);
+      dados.impressoes = parseInt(dados.impressoes);
+      dados.engagement = parseFloat(dados.engagement);
+      dados.previsao_roi = parseFloat(dados.previsao_roi);
+      
+      try {
+        const response = await fetch('/api/campanhas', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify(dados)
+        });
+        
+        if (response.ok) {
+          // Anima o botão de envio
+          const submitBtn = formEl.querySelector('.submit-btn');
+          submitBtn.style.animation = 'pulse 0.5s';
+          setTimeout(() => {
+            submitBtn.style.animation = '';
+          }, 500);
+          
+          // Limpa o formulário com animação
+          Array.from(formEl.elements).forEach(input => {
+            if (input.tagName === 'INPUT') {
+              input.style.transition = 'all 0.3s ease';
+              input.style.backgroundColor = '#e6fffa';
+              setTimeout(() => {
+                input.style.backgroundColor = '';
+                input.value = '';
+              }, 300);
+            }
+          });
+          
+          // Mostra notificação
+          showToast('Campanha adicionada com sucesso!');
+          
+          // Recarrega a tabela
+          carregarTabela();
+        } else {
+          showToast('Erro ao adicionar campanha!');
+        }
+      } catch (error) {
+        console.error('Erro ao enviar dados:', error);
+        showToast('Erro de conexão com o servidor!');
+      } finally {
+        hideLoading();
+      }
+    });
+    
+    // Adiciona animação ao passar o mouse sobre os inputs
+    const inputs = document.querySelectorAll('input');
+    inputs.forEach(input => {
+      input.addEventListener('focus', () => {
+        input.parentElement.style.transform = 'translateX(5px)';
+      });
+      
+      input.addEventListener('blur', () => {
+        input.parentElement.style.transform = 'translateX(0)';
+      });
+    });
+  </script>
+</body>
+</html>

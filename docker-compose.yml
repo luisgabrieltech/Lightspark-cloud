@@ -1,0 +1,9 @@
+version: "3.8"
+
+services:
+  lightspark:
+    build: .
+    container_name: lightspark-app
+    ports:
+      - "8585:8585"
+    restart: always
