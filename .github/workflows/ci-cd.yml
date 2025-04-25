@@ -52,6 +52,14 @@ jobs:
       with:
         username: ${{ secrets.DOCKER_HUB_USERNAME }}
         password: ${{ secrets.DOCKER_HUB_TOKEN }}
+        logout: false
+    
+    - name: Verificar credenciais Docker
+      run: |
+        echo "Verificando autenticação no Docker Hub..."
+        docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} -p ${{ secrets.DOCKER_HUB_TOKEN }}
+        echo "Login bem-sucedido, verificando se o repositório é acessível..."
+        echo "Usuário: ${{ secrets.DOCKER_HUB_USERNAME }}"
     
     - name: Determinar tag da imagem
       id: image-tag
@@ -62,16 +70,32 @@ jobs:
           echo "tag=${GITHUB_REF#refs/heads/}-${GITHUB_SHA::7}" >> $GITHUB_OUTPUT
         fi
     
-    - name: Build e Push da imagem
+    - name: Build da imagem
       uses: docker/build-push-action@v4
       with:
         context: .
-        push: true
-        tags: |
-          ${{ secrets.DOCKER_HUB_USERNAME }}/lightspark:${{ steps.image-tag.outputs.tag }}
-          ${{ secrets.DOCKER_HUB_USERNAME }}/lightspark:latest
-        cache-from: type=registry,ref=${{ secrets.DOCKER_HUB_USERNAME }}/lightspark:buildcache
-        cache-to: type=registry,ref=${{ secrets.DOCKER_HUB_USERNAME }}/lightspark:buildcache,mode=max
+        push: false
+        load: true
+        tags: lightspark:local
+    
+    - name: Tag e Push da imagem
+      run: |
+        # Identificar a imagem e tags
+        TAG="${{ steps.image-tag.outputs.tag }}"
+        DOCKER_REPO="${{ secrets.DOCKER_HUB_USERNAME }}/lightspark"
+        
+        # Tag local para repo
+        docker tag lightspark:local ${DOCKER_REPO}:${TAG}
+        docker tag lightspark:local ${DOCKER_REPO}:latest
+        
+        # Push para o Docker Hub
+        echo "Enviando imagem para ${DOCKER_REPO}:${TAG}..."
+        docker push ${DOCKER_REPO}:${TAG} || { echo "Falha no push. Tentando novamente com login direto"; \
+          docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} -p ${{ secrets.DOCKER_HUB_TOKEN }} && \
+          docker push ${DOCKER_REPO}:${TAG}; }
+        
+        echo "Enviando imagem para ${DOCKER_REPO}:latest..."
+        docker push ${DOCKER_REPO}:latest || echo "Falha ao enviar tag latest, mas continuando"
 
   deploy-stage:
     name: Deploy em Staging
